@@ -1,0 +1,32 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
+.canvas-container {
+    width: 40vw;
+    background-color: lightsteelblue;
+    border: 1px solid lightgray;
+    margin: 10px auto;
+}
+
+canvas {
+    display: block;
+    background-color: white;
+}
+
+
+.select-img-container img{
+    width: 150px;
+    cursor: pointer;
+    filter: grayscale(.7);
+}
+
+.select-img-container img:hover{
+    transition: 1s;
+    filter: unset;
+}
