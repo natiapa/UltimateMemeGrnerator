@@ -1,42 +1,115 @@
 'use strict'
-const MEMES_STORAGE_KEY = 'myApp_memes'
+const IMAGES_STORAGE_KEY = 'myApp_images'
 
-var gMeme
-_createMemes()
+var gImgs = []
+var gMeme = {
+    selectedImgId: 0,
+    selectedLineIdx: 0,
+    lines: []
+}
+
+_createImgs()
 
 function getMeme() {
     return gMeme
 }
 
+function getImgs() {
+    return gImgs
+}
+
 function setLineTxt(text) {
-    _createMeme(0, [{ txt: text, size: 12, color: 'red' }])
-    _saveMeme
+    const newLine = _createLine(text)
+    gMeme.lines.push(newLine)
+    gMeme.selectedLineIdx = gMeme.lines.length - 1
 }
 
-// privet function
+function updateLocation(x, y, width) {
+    gMeme.lines[gMeme.selectedLineIdx].x = x
+    gMeme.lines[gMeme.selectedLineIdx].y = y
+    gMeme.lines[gMeme.selectedLineIdx].width = width
+}
 
-function _createMemes() {
-    gMeme = loadFromStorage(MEMES_STORAGE_KEY)
-    if (!gMeme) {
-        gMeme = [
-            _createMeme(0, [{ txt: 'First line', size: 20, color: 'red' }])
-        ]
-        _saveMeme
+function setImg(imgId) {
+    gMeme.selectedImgId = imgId
+}
+
+function getImgById(imgId) {
+    const img = gImgs.find(img => img.id === imgId)
+    return img
+}
+
+function switchLine() {
+    const numLines = gMeme.lines.length
+    if (numLines === 0) return
+
+    gMeme.selectedLineIdx++
+    if (gMeme.selectedLineIdx >= numLines) {
+        gMeme.selectedLineIdx = 0
     }
-
 }
-function _createMeme(selectedLineIdx = 0, lines = [{ txt: '', size: 12, color: 'black' }]) {
+
+function updateColor(textColor) {
+    gMeme.lines[gMeme.selectedLineIdx].color = textColor
+}
+
+function changeFontSize(sign) {
+    if (sign === '+') {
+        gMeme.lines[gMeme.selectedLineIdx].size++
+    } else {
+        gMeme.lines[gMeme.selectedLineIdx].size--
+    }
+}
+
+function isClickOnLine(x, y) {
+    return gMeme.lines.findIndex(line => (
+        x >= line.x - line.width / 2 && x <= line.x + line.width / 2 &&
+        y >= line.y - line.height / 2 && y <= line.y + line.height / 2
+    ))
+}
+function updateIndex(clickedLineIdx) {
+    gMeme.selectedLineIdx = clickedLineIdx
+}
+
+function _createImgs() {
+    gImgs = loadFromStorage(IMAGES_STORAGE_KEY)
+
+    if (!gImgs) {
+        gImgs = [
+            _createImg('images/2.jpg'),
+            _createImg('images/3.jpg'),
+            _createImg('images/4.jpg'),
+            _createImg('images/5.jpg'),
+            _createImg('images/6.jpg'),
+            _createImg('images/8.jpg'),
+            _createImg('images/11.jpg'),
+            _createImg('images/12.jpg'),
+        ]
+        _saveImg()
+    }
+}
+
+function _createImg(url = '') {
     return {
-        selectedImgId: makeId(),
-        selectedLineIdx,
-        lines: lines.map(line => ({ // Use map to iterate over lines
-            txt: line.txt,           // Access txt property using line.txt
-            size: line.size,         // Access size property using line.size
-            color: line.color        // Access color property using line.color
-        }))
-    };
+        id: makeId(),
+        url,
+        keywords: [],
+    }
+}
+function _createLine(txt, color = 'black', fontSize = 30, width, x = 0, y = 0) {
+    return {
+        txt,
+        size: fontSize,
+        color,
+        x,
+        y,
+        width,
+        height: fontSize,
+    }
+}
+function _saveImg() {
+    saveToStorage(IMAGES_STORAGE_KEY, gImgs)
 }
 
-function _saveMeme() {
-    saveToStorage(MEMES_STORAGE_KEY, gMeme)
-}
+
+

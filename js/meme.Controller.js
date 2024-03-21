@@ -1,120 +1,136 @@
 'use strict'
 let gElCanvas
 let gCtx
-let gTextInput
+let gImgUrl
+let currentY = 25
+let flag = false
+
 
 function onInit() {
-    gElCanvas = document.querySelector('canvas')
+    const elEditor = document.querySelector('.editor')
+    const elCanvasContainer = elEditor.querySelector('.canvas-container')
+    gElCanvas = elCanvasContainer.querySelector('canvas')
     gCtx = gElCanvas.getContext('2d')
 
-    gTextInput = document.querySelector('text-container input[name="text"]')
-
+    addListeners()
     renderMeme()
-    // resizeCanvas()
-
-    // window.addEventListener('resize', () => resizeCanvas())
+    rederGallery()
+    resizeCanvas()
 }
 
 function renderMeme() {
- const img = new Image()
- img.src = 'images/2.jpg'
+    const meme = getMeme()
+    const { lines } = meme
 
- img.onload = ()=>
-    gCtx.drawImage(img, 0, 0, gElCanvas.width, gElCanvas.height )
-    drawText('Your Text Here', gElCanvas.width / 2, 50);
+    const img = new Image()
+    img.src = gImgUrl || 'images/2.jpg'
+
+    currentY = 25
+    img.onload = () => {
+        gElCanvas.width = img.naturalWidth
+        gElCanvas.height = img.naturalHeight
+        gCtx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
+
+        lines.forEach((line, idx) => {
+
+            drawText(line.txt, line.color, line.size, gElCanvas.width / 2, currentY)
+
+            if (idx === meme.selectedLineIdx && flag === true) {
+                drawFrame(currentY, line.size)
+                flag = false
+            }
+            currentY += line.size + 50
+        })
+
+    }
 }
 
-function onUpdateText() {
-    const text = gTextInput.value
+function addListeners() {
+    gElCanvas.addEventListener('click', onMouseClick)
+    window.addEventListener('resize', () => resizeCanvas())
+    document.querySelector('button[name="download-btn"]').addEventListener('click', onDownloadCanvas)
 }
 
-// function resizeCanvas() {
-//     const elContainer = document.querySelector('.editor')
-//     gElCanvas.width = elContainer.clientWidth
-// }
+function resizeCanvas() {
+    const elEditor = document.querySelector('.editor')
+    const elContainer = elEditor.querySelector('.canvas-container')
+    gElCanvas.width = elContainer.clientWidth
+    renderMeme()
+}
 
-// function drawImg() {
-//     const elImg = new Image()
-//     elImg.src = 'images/2.jpg'
+function onUpdateColor() {
+    const elColor = document.getElementById('color').value
+    updateColor(elColor)
+    renderMeme()
+}
 
-//     elImg.onload = () =>
-//         gCtx.drawImage(elImg, 0, 0, elImg.naturalWidth, elImg.naturalHeight)
-// }
+function onChangeFontSize(sign) {
+    flag = true
+    changeFontSize(sign)
+    renderMeme()
+}
 
+function onAddLine() {
+    const elTxt = document.querySelector('input[name="text"]').value
+    setLineTxt(elTxt)
+    renderMeme()
+}
 
+function onSwitchLine() {
+    flag = true
+    switchLine()
+    renderMeme()
+}
 
-// function onSelectImg(elImg) {
-//     gElCanvas.height = (elImg.naturalHeight / elImg.naturalWidth) * gElCanvas.width
-//     gCtx.drawImage(elImg, 0, 0, gElCanvas.width, gElCanvas.height)
-// }
+function drawText(text, textColor, fontSize, x, y) {
+    gCtx.lineWidth = 2
+    gCtx.strokeStyle = textColor
 
+    gCtx.fillStyle = textColor
 
-// function onSetLineText(text) {
-//     gText = text
-//     setLineTxt(text)
-// }
+    gCtx.font = `${fontSize}px Arial`
+    gCtx.textAlign = 'center'
+    gCtx.textBaseline = 'middle'
 
+    gCtx.fillText(text, x, y)
+    gCtx.strokeText(text, x, y)
 
-// function onAddTextToCanvas(ev) {
-//     const { offsetX, offsetY } = ev
-//     const textInput = document.querySelector('input[name="text"]')
-//     gText = textInput.value
+    const width = gCtx.measureText(text).width
 
-    
+    updateLocation(x, y, width)
+}
 
-//     drawImg()
-//     drawText(gText, offsetX, offsetY)
-    
+function drawFrame(y, size) {
+    gCtx.strokeStyle = 'black'
+    gCtx.lineWidth = 2
+    gCtx.strokeRect(10, y - size / 2, gElCanvas.width - 100, size + 10)
+}
 
-// }
+function onDownloadCanvas() {
+    const link = document.createElement('a')
+    link.href = gElCanvas.toDataURL('image/jpeg')
 
-// function drawText(text, x, y) {
-    
-//     gCtx.lineWidth = 2
-//     gCtx.strokeStyle = 'orange'
-
-//     gCtx.fillStyle = 'lightsteelblue'
-
-//     gCtx.font = '45px Arial'
-//     gCtx.textAlign = 'center'
-//     gCtx.textBaseline = 'middle'
-
-//     drawImg()
-//     gCtx.fillText(text, x, y)
-//     gCtx.strokeText(text, x, y)
-// }
-
-
-
-// function onSetShape(shape) {
-//     //     gCurrShape = shape
-//     // }
-
-// function onDraw(ev) {
-//     const { offsetX, offsetY } = ev
+    link.download = 'canvas_image.jpg'
+    link.click()
+}
 
 
-//     if (gCurrShape === 'text') {
-//         drawText(gText, offsetX, offsetY);
-//     }
-// }
+function onMouseClick(ev) {
+    const rect = gElCanvas.getBoundingClientRect();
+    const x = ev.clientX - rect.left;
+    const y = ev.clientY - rect.top;
+    const clickedLineIdx = isClickOnLine(x, y);
 
-// function renderMeme() {
-//     const elImg = document.querySelector('.select-img-container')
+    if (clickedLineIdx !== -1) {
+        updateIndex(clickedLineIdx)
+        console.log('line:', gMeme.lines[clickedLineIdx])
 
-//     const strHtmls = `
-//     <img src="images/2.jpg" onclick="onSelectImg(this)" />
+        const selectedLine = gMeme.lines[clickedLineIdx]
+        const textInput = document.querySelector('input[name="text"]')
+        textInput.value = selectedLine.txt
+        textInput.focus()
 
-//     <div>
-//     <div class="text-container">
-//     <label for="text">Text:</label>
-//     <input type="text" id="text" name="text" placeholder="Add Text Here" oninput="onSetLineText(this.value)">
-//     </div>
+    }
+}
 
-//     <button no use thi>Add Text</button>
-//     <div>
-    
-//     `
 
-//     elImg.innerHTML = strHtmls
-// }

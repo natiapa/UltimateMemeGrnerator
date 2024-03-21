@@ -9,20 +9,61 @@
 </head>
 
 <body onload="onInit()">
-    <section class="gallery"></section>
+
+    <nav class="menu">
+        <ul>
+            <li><a href='http://'>Home</a></li>
+            <li><a href='http://'>gallery</a></li>
+            <li><a href='http://'>About</a></li>
+        </ul>
+    </nav>
+
     <section class="editor">
-        <canvas id="canvas" width="400" height="400"></canvas>
-        <div class="text-container">
-            <label for="text"></label>
-            <input type="text" id="text" name="text" placeholder="Add Text here">
+        <div class="canvas-container">
+            <canvas id="canvas" width="400" height="400"></canvas>
+        </div>
+
+        <section class="control-box">
+
+            <div class="text-container">
+                <label for="text"></label>
+                <input type="text" id="text" name="text" placeholder="Add Text here">
+            </div>
+
+            <div>
+                <button class="btn" name="btn add-line-btn" onclick="onAddLine()">Add Line</button>
+                <button class="btn" name="btn switch-line-btn" onclick="onSwitchLine()">Switch Line</button>
+            </div>
+
+            <div class="btn-container">
+                <button class="btn" name="decrease-btn" onclick="onChangeFontSize('-')">A -</button>
+                <button class="btn" name="increase-btn" onclick="onChangeFontSize('+')">A +</button>
+                
+                <label  for="color"></label>
+                <input  type="color" id="color" name="color" onchange="onUpdateColor()">
+            </div>
+
+            <div class="download-btn">
+                <button class="btn" id="download-btn" name="download-btn">Download</button>
+            </div>
+        </section>
+
+    </section>
+
+    <h3>Select an image</h3>
+    <section class="gallery">
+        <div class="select-img-container">
         </div>
     </section>
 
+    <footer></footer>
 
     <script src="js/services/util.service.js"></script>
     <script src="js/services/storage.service.js"></script>
     <script src="js/services/meme.service.js"></script>
 
+
+    <script src="js/gallery.controller.js"></script>
     <script src="js/meme.controller.js"></script>
 
 </body>
