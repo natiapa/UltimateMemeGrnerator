@@ -12,11 +12,12 @@ body {
 }
 
 .canvas-container {
-	background-color: #212529;
-	border: 1px solid #444;
-	margin: 20px auto;
-	max-width: 40%;
-	overflow: hidden;
+    background-color: #212529;
+    border: 1px solid #444;
+    margin: 20px auto;
+    max-width: 40%;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add a shadow */
 }
 
 .canvas-container canvas {
@@ -30,10 +31,9 @@ body {
 }
 
 .text-container input[type="text"] {
-	padding: 8px;
-	width: 200px;
-	border: 1px solid #777;
-	border-radius: 4px;
+    padding: 10px; /* Increased padding */
+    width: 80%; /* Adjust width */
+    border: 1px solid #ccc; /* Softer border color */
 }
 
 .btn:hover {
@@ -41,13 +41,14 @@ body {
 }
 
 .btn {
-	background-color: #0099CC;
-	color: #fff;
-	padding: 10px 20px;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	margin-bottom: 10px;
+    background-color: #0099CC;
+    color: #fff;
+    padding: 12px 24px; /* Increased padding */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease; /* Smooth transition */
 }
 
 .btn-container {
@@ -64,18 +65,20 @@ body {
 	margin-top: 20px;
 }
 .select-img-container {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px; /* Add padding for better spacing */
 }
 
 .select-img-container img {
-	width: calc(33.33% - 20px);
-	max-width: 200px;
-	height: auto;
-	cursor: pointer;
-	filter: blur(.1rem);
+    width: calc(33.33% - 20px);
+    max-width: 200px;
+    height: auto;
+    cursor: pointer;
+    filter: grayscale(100%) blur(0.1rem); /* Convert images to grayscale and add blur */
+    transition: filter 0.3s ease; /* Smooth transition */
 }
 
 .select-img-container img:hover {
@@ -92,31 +95,38 @@ body {
 }
 
 .menu {
-	background-color: #004F6A;
-	padding: 10px 0;
+    background-color: #004F6A;
+    padding: 20px; /* Increase padding for better spacing */
+    display: flex;
+    justify-content: space-between; /* Align items to each end */
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+.logo {
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold; /* Add bold font weight */
 }
 
 .menu ul {
-	list-style: none;
-	padding: 0;
-	margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
 }
 
 .menu li {
-	display: inline-block;
+    margin-right: 20px; /* Add spacing between menu items */
 }
 
 .menu a {
-	display: block;
-	padding: 10px 20px;
-	text-decoration: none;
-	color: #fff;
-	transition: background-color 0.3s ease;
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease; /* Smooth color transition */
 }
 
 .menu a:hover {
-	background-color: #0099CC;
-
+    color: #66b3ff; /* Change color on hover */
 }
 
 @media screen and (max-width: 800px) {
