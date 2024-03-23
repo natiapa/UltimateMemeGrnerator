@@ -19,9 +19,14 @@ function getImgs() {
 }
 
 function setLineTxt(text) {
+    if(text === '') return
+
+    gMeme.selectedLineIdx = gMeme.lines.length - 1
     const newLine = _createLine(text)
     gMeme.lines.push(newLine)
     gMeme.selectedLineIdx = gMeme.lines.length - 1
+    console.log('after', gMeme.lines.length)
+    console.log('gMeme.selectedLineIdx', gMeme.selectedLineIdx)
 }
 
 function updateLocation(x, y, width) {
@@ -67,9 +72,17 @@ function isClickOnLine(x, y) {
         y >= line.y - line.height / 2 && y <= line.y + line.height / 2
     ))
 }
+
 function updateIndex(clickedLineIdx) {
     gMeme.selectedLineIdx = clickedLineIdx
+    console.log('updateIndex', gMeme.selectedLineIdx)
 }
+function updateLineText(lineIdx, newText) {
+    console.log('lineIdx', lineIdx)
+    console.log('newText', newText)
+    gMeme.lines[lineIdx].txt = newText
+}
+
 
 function _createImgs() {
     gImgs = loadFromStorage(IMAGES_STORAGE_KEY)
@@ -96,7 +109,7 @@ function _createImg(url = '') {
         keywords: [],
     }
 }
-function _createLine(txt, color = 'black', fontSize = 30, width, x = 0, y = 0) {
+function _createLine(txt, color = 'white', fontSize = 30, width, x = 0, y = 0) {
     return {
         txt,
         size: fontSize,

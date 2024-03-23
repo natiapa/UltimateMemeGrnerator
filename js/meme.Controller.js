@@ -2,8 +2,9 @@
 let gElCanvas
 let gCtx
 let gImgUrl
-let currentY = 25
-let flag = false
+let gCurrIndex = 0
+
+
 
 
 function onInit() {
@@ -25,8 +26,8 @@ function renderMeme() {
     const img = new Image()
     img.src = gImgUrl || 'images/2.jpg'
 
-    currentY = 25
     img.onload = () => {
+        var currentY = 25
         gElCanvas.width = img.naturalWidth
         gElCanvas.height = img.naturalHeight
         gCtx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
@@ -35,15 +36,43 @@ function renderMeme() {
 
             drawText(line.txt, line.color, line.size, gElCanvas.width / 2, currentY)
 
-            if (idx === meme.selectedLineIdx && flag === true) {
-                drawFrame(currentY, line.size)
-                flag = false
+            if (idx === meme.selectedLineIdx) {
+                console.log('meme.selectedLineIdx', meme.selectedLineIdx)
+                drawFrame(line.y, line.size)
             }
             currentY += line.size + 50
         })
 
     }
 }
+
+function renderMeme1() {
+    const meme = getMeme()
+    const { lines } = meme
+
+    const img = new Image()
+    img.src = gImgUrl || 'images/2.jpg'
+
+    img.onload = () => {
+        var currentY = 25
+        gElCanvas.width = img.naturalWidth
+        gElCanvas.height = img.naturalHeight
+        gCtx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
+
+        lines.forEach((line, idx) => {
+
+            drawText(line.txt, line.color, line.size, gElCanvas.width / 2, currentY)
+
+            if (idx === gCurrIndex) {
+                console.log('meme.selectedLineIdx', meme.selectedLineIdx)
+                drawFrame(line.y, line.size)
+            }
+            currentY += line.size + 50
+        })
+
+    }
+}
+
 
 function addListeners() {
     gElCanvas.addEventListener('click', onMouseClick)
@@ -65,7 +94,6 @@ function onUpdateColor() {
 }
 
 function onChangeFontSize(sign) {
-    flag = true
     changeFontSize(sign)
     renderMeme()
 }
@@ -77,18 +105,17 @@ function onAddLine() {
 }
 
 function onSwitchLine() {
-    flag = true
     switchLine()
     renderMeme()
 }
 
-function drawText(text, textColor, fontSize, x, y) {
+function drawText(text, textColor, fontSize,x, y) {
     gCtx.lineWidth = 2
     gCtx.strokeStyle = textColor
 
     gCtx.fillStyle = textColor
 
-    gCtx.font = `${fontSize}px Arial`
+    gCtx.font = `${fontSize}px Ariel`
     gCtx.textAlign = 'center'
     gCtx.textBaseline = 'middle'
 
@@ -96,14 +123,7 @@ function drawText(text, textColor, fontSize, x, y) {
     gCtx.strokeText(text, x, y)
 
     const width = gCtx.measureText(text).width
-
     updateLocation(x, y, width)
-}
-
-function drawFrame(y, size) {
-    gCtx.strokeStyle = 'black'
-    gCtx.lineWidth = 2
-    gCtx.strokeRect(10, y - size / 2, gElCanvas.width - 100, size + 10)
 }
 
 function onDownloadCanvas() {
@@ -114,23 +134,57 @@ function onDownloadCanvas() {
     link.click()
 }
 
+function drawFrame(yCoord, size) {
+    const frameWidth = gElCanvas.width - 40
+    const frameHeight = size + 10
 
-function onMouseClick(ev) {
-    const rect = gElCanvas.getBoundingClientRect();
-    const x = ev.clientX - rect.left;
-    const y = ev.clientY - rect.top;
-    const clickedLineIdx = isClickOnLine(x, y);
+    const x = 20
+    const yOffset = (frameHeight - size) / 2
+    const y = yCoord - size / 2 - yOffset
 
-    if (clickedLineIdx !== -1) {
-        updateIndex(clickedLineIdx)
-        console.log('line:', gMeme.lines[clickedLineIdx])
-
-        const selectedLine = gMeme.lines[clickedLineIdx]
-        const textInput = document.querySelector('input[name="text"]')
-        textInput.value = selectedLine.txt
-        textInput.focus()
-
-    }
+    gCtx.strokeStyle = 'black'
+    gCtx.lineWidth = 2
+    gCtx.strokeRect(x, y, frameWidth, frameHeight)
 }
 
 
+
+function onMouseClick(ev) {
+    const meme = getMeme()
+
+    const rect = gElCanvas.getBoundingClientRect()
+    const scaleX = gElCanvas.width / rect.width
+    const scaleY = gElCanvas.height / rect.height
+    const x = (ev.clientX - rect.left) * scaleX
+    const y = (ev.clientY - rect.top) * scaleY
+
+
+    const clickedLineIdx = isClickOnLine(x, y)
+    console.log('clickedLineIdx', clickedLineIdx)
+
+    if (clickedLineIdx !== -1) {
+        gCurrIndex = clickedLineIdx
+        const selectedLine = meme.lines[gCurrIndex]
+        console.log('selectedLine', selectedLine)
+        onEditText(selectedLine, meme)
+        renderMeme1()
+
+    }
+
+}
+
+function onEditText(selectedLine) {
+    const inputText = document.querySelector('input[name="text"]')
+
+    inputText.value = selectedLine.txt
+    inputText.focus()
+    inputText.addEventListener('input', function () {
+        if (gCurrIndex !== -1) {
+            const newText = inputText.value;
+            updateLineText(gCurrIndex, newText)
+
+        }
+        renderMeme1()
+    })
+
+}

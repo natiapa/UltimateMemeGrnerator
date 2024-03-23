@@ -10,13 +10,11 @@
 
 <body onload="onInit()">
 
-    <nav class="menu">
-        <ul>
-            <li><a href='http://'>Home</a></li>
-            <li><a href='http://'>gallery</a></li>
-            <li><a href='http://'>About</a></li>
-        </ul>
-    </nav>
+    <header>
+        <nav class="menu">
+            <div class="logo">Meme</div>
+        </nav>
+    </header>
 
     <section class="editor">
         <div class="canvas-container">
@@ -31,16 +29,26 @@
             </div>
 
             <div>
-                <button class="btn" name="btn add-line-btn" onclick="onAddLine()">Add Line</button>
+                <button class="btn" name="btn add-line-btn" onclick="onAddLine()">Add</button>
                 <button class="btn" name="btn switch-line-btn" onclick="onSwitchLine()">Switch Line</button>
             </div>
 
             <div class="btn-container">
+                <div>
+                <!-- <select class=" btn font-family-select" name="select-font" onchange="onSelectFont(this.value)">
+                    <option value="Arial">Arial</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Courier New">Courier New</option>
+                </select> -->
+
                 <button class="btn" name="decrease-btn" onclick="onChangeFontSize('-')">A -</button>
                 <button class="btn" name="increase-btn" onclick="onChangeFontSize('+')">A +</button>
-                
-                <label  for="color"></label>
-                <input  type="color" id="color" name="color" onchange="onUpdateColor()">
+
+                <label for="color"></label>
+                <input type="color" id="color" name="color" onchange="onUpdateColor()">
+            </div>
             </div>
 
             <div class="download-btn">
