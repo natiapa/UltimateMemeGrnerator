@@ -6,7 +6,7 @@ function rederGallery() {
     const imgs = getImgs()
 
     const strHtml = imgs.map(img => `
-    <img src="/${img.url}" onclick="onImgSelect('${img.id}', '${img.url}')" />
+    <img src="../${img.url}" onclick="onImgSelect('${img.id}', '${img.url}')" />
     `)
 
     elImgs.innerHTML = strHtml.join('')

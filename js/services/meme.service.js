@@ -89,10 +89,10 @@ function _createImgs() {
 
     if (!gImgs) {
         gImgs = [
-            _createImg('.images/2.jpg'),
-            _createImg('/images/3.jpg'),
-            _createImg('/images/4.jpg'),
-            _createImg('/images/5.jpg'),
+            _createImg('../images/2.jpg'),
+            _createImg('../images/3.jpg'),
+            _createImg('../images/4.jpg'),
+            _createImg('../images/5.jpg'),
             // _createImg('/..images/6.jpg'),
             // _createImg('/.images/8.jpg'),
             // _createImg('/.images/11.jpg'),
